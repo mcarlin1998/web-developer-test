@@ -1,29 +1,45 @@
 "use client";
 import { useGalleryData, GalleryImage } from "@/lib/useGalleryData";
 import { useEffect, useState } from "react";
+import GalleryCard from "@/components/GalleryCard";
 
 export default function Home() {
+  //Stores image data
   const [imageData, setImageData] = useState<GalleryImage[]>([]);
 
   async function getGalleryData() {
     try {
+      //Fetches gallery data and sets in useState with matching types.
       const res = await useGalleryData();
-      // if (res) {
       setImageData(res.data);
-      // }
     } catch (e) {
+      //throws error/error handler
       console.error("error", e);
     }
   }
 
   useEffect(() => {
+    //useEffect hook to fire getGalleryData function on render
     getGalleryData();
   }, []);
+
   console.log(imageData);
+
   return (
     <main>
-      Add content and style according to
-      https://www.figma.com/design/cqwIYXNHitVg2nAlMBfObA/Web-Developer-Test?node-id=0-1&t=nQJuZMDmryzLddLl-1
+      {/* Dynamically renders gallery card component based on the size of the imageData array - maps each object and passes data as props */}
+      {imageData
+        ? imageData.map((img, index) => {
+            console.log("page.tsx", img.filename);
+            return (
+              <GalleryCard
+                key={index}
+                filename={img.filename}
+                altText={img.altText}
+              />
+            );
+          })
+        : null}
     </main>
   );
 }
